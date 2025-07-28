@@ -6,7 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+    @endphp
+    <link rel="stylesheet" href="{{ asset('build/assets/' . $manifest['resources/css/app.css']['file']) }}">
+    <script type="module" src="{{ asset('build/assets/' . $manifest['resources/js/app.js']['file']) }}"></script>
+
 </head>
 <body>
     <h1 class="bg-blue-500">Testing</h1>
