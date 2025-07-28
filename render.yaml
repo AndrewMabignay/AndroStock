@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: AndroStock
+    name: androstock
     env: docker
     plan: free
     dockerfilePath: ./Dockerfile
@@ -8,11 +8,11 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_KEY
-        value: base64:Sv/GM9q9t1Xt2CrEGbx6qctpxULMgwfZK9QDdYFU2mA=
+        value: base64:base64:/vNYTkQhYtyvK6eh8P/7xnpORggq2iU/mH0LeTpxF40=
       - key: APP_DEBUG
         value: false
       - key: APP_URL
-        value: https://androstock.com
+        value: https://androstock.onrender.com
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
