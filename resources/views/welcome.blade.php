@@ -7,10 +7,19 @@
     <title>Document</title>
 
     @php
-        $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+        $manifest = file_exists(public_path('build/manifest.json'))
+            ? json_decode(file_get_contents(public_path('build/manifest.json')), true)
+            : [];
     @endphp
-    <link rel="stylesheet" href="{{ asset('build/assets/' . $manifest['resources/css/app.css']['file']) }}">
-    <script type="module" src="{{ asset('build/assets/' . $manifest['resources/js/app.js']['file']) }}"></script>
+
+    @if (isset($manifest['resources/css/app.css']['file']))
+        <link rel="stylesheet" href="{{ asset('build/assets/' . $manifest['resources/css/app.css']['file']) }}">
+    @endif
+
+    @if (isset($manifest['resources/js/app.js']['file']))
+        <script type="module" src="{{ asset('build/assets/' . $manifest['resources/js/app.js']['file']) }}"></script>
+    @endif
+
 
 </head>
 <body>
