@@ -43,6 +43,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # ✅ Install Node dependencies and build assets
 RUN npm install && npm run build
 
+# ✅ Copy Vite build output to public/build
+RUN mkdir -p public/build && cp -r build/* public/build/
+
+# ✅ (Optional) Laravel cache boost
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
+
 # Expose port for Render
 EXPOSE 8080
 
