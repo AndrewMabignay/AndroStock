@@ -38,11 +38,11 @@ RUN cp .env.example .env && php artisan key:generate
 # Migrate DB
 RUN php artisan migrate --force
 
-# Build assets (Tailwind/Vite)
-RUN npm install && npm run build
-
 # Expose port
 EXPOSE 8080
+
+# Build assets (Tailwind/Vite)
+RUN npm install && npm run build
 
 # Start server
 CMD php -S 0.0.0.0:8080 -t public
