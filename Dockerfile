@@ -1,19 +1,39 @@
-FROM php:8.2-fpm
+# Dockerfile
 
+FROM php:8.2
+
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    zip unzip git curl sqlite3 libsqlite3-dev libzip-dev \
-    libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd zip
+    unzip \
+    libzip-dev \
+    zip \
+    sqlite3 \
+    libsqlite3-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    git \
+    curl \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install pdo pdo_sqlite zip gd
 
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /var/www
+
+# Copy files
 COPY . .
 
-RUN composer install --optimize-autoloader --no-dev
+# Install PHP dependencies
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/database \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache /var/www/database
+# Generate app key
+RUN php artisan key:generate
 
-EXPOSE 8000
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Expose port 8080
+EXPOSE 8080
+
+# Start Laravel using PHP's built-in server
+CMD php -S 0.0.0.0:8080 -t public
