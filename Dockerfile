@@ -1,6 +1,6 @@
 FROM php:8.2
 
-# Install system dependencies
+# System deps
 RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
@@ -12,45 +12,37 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     git \
     curl \
+    nodejs \
+    npm \
     && docker-php-ext-configure zip \
     && docker-php-ext-install pdo pdo_sqlite zip gd
 
-# Install Composer
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Set workdir
 WORKDIR /var/www
 
-# Copy all files
+# Copy project files
 COPY . .
 
-# Install PHP dependencies
+# Laravel dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# Create SQLite database file
+# Create SQLite DB
 RUN mkdir -p /var/www/database && touch /var/www/database/database.sqlite
 
-# Create .env file and generate key
+# Env & key
 RUN cp .env.example .env && php artisan key:generate
 
-# Run migrations
+# Migrate DB
 RUN php artisan migrate --force
 
-# ✅ Install Node.js and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
-
-# ✅ Install Node dependencies and build assets
+# Build assets (Tailwind/Vite)
 RUN npm install && npm run build
 
-# ✅ Copy Vite build output to public/build
-RUN mkdir -p public/build && cp -r build/* public/build/
-
-# ✅ (Optional) Laravel cache boost
-RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
-
-# Expose port for Render
+# Expose port
 EXPOSE 8080
 
-# Serve the app
+# Start server
 CMD php -S 0.0.0.0:8080 -t public
