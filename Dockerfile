@@ -29,6 +29,7 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 RUN mkdir -p /var/www/database && touch /var/www/database/database.sqlite
+RUN php artisan migrate --force
 
 # Create .env file (duplicate from .env.example)
 RUN cp .env.example .env
