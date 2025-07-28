@@ -13,11 +13,11 @@
     @endphp
 
     @if (isset($manifest['resources/css/app.css']['file']))
-        <link rel="stylesheet" href="{{ asset('build/assets/' . $manifest['resources/css/app.css']['file']) }}">
+        <link rel="stylesheet" href="{{ asset('build/' . $manifest['resources/css/app.css']['file']) }}">
     @endif
 
     @if (isset($manifest['resources/js/app.js']['file']))
-        <script type="module" src="{{ asset('build/assets/' . $manifest['resources/js/app.js']['file']) }}"></script>
+        <script type="module" src="{{ asset('build/' . $manifest['resources/js/app.js']['file']) }}"></script>
     @endif
 
 
