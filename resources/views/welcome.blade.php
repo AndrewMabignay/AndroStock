@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-    @php
+    {{-- @php
         $manifest = file_exists(public_path('build/manifest.json'))
             ? json_decode(file_get_contents(public_path('build/manifest.json')), true)
             : [];
@@ -18,7 +18,15 @@
 
     @if (isset($manifest['resources/js/app.js']['file']))
         <script type="module" src="{{ asset('build/' . $manifest['resources/js/app.js']['file']) }}"></script>
-    @endif
+    @endif --}}
+
+    @php
+        $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+    @endphp
+
+    <link rel="stylesheet" href="{{ secure_asset('build/' . $manifest['resources/css/app.css']['file']) }}">
+    <script type="module" src="{{ secure_asset('build/' . $manifest['resources/js/app.js']['file']) }}"></script>
+
 
 
 </head>
