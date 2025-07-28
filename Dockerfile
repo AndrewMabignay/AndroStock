@@ -41,7 +41,11 @@ RUN php artisan migrate --force
 # Expose port
 EXPOSE 8080
 
-# Build assets (Tailwind/Vite)
+# ✅ Install Node.js and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# ✅ Install Node deps and build Tailwind
 RUN npm install && npm run build
 
 # Start server
