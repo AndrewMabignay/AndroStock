@@ -1,5 +1,3 @@
-# Dockerfile
-
 FROM php:8.2
 
 # Install system dependencies
@@ -23,33 +21,30 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy Laravel project files
+# Copy all files
 COPY . .
 
 # Install PHP dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# ✅ Create .env before running any artisan commands
-RUN cp .env.example .env
+# Create SQLite database file
+RUN mkdir -p /var/www/database && touch /var/www/database/database.sqlite
 
-# ✅ Generate app key
-RUN php artisan key:generate
+# Create .env file and generate key
+RUN cp .env.example .env && php artisan key:generate
 
-# ✅ Install Node.js
+# Run migrations
+RUN php artisan migrate --force
+
+# ✅ Install Node.js and npm
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs
 
-# ✅ Build front-end assets (Tailwind, Vite, etc.)
+# ✅ Install Node dependencies and build assets
 RUN npm install && npm run build
-
-# ✅ Create SQLite database file
-RUN mkdir -p database && touch database/database.sqlite
-
-# ✅ Run migrations after .env and DB file exist
-RUN php artisan migrate --force
 
 # Expose port for Render
 EXPOSE 8080
 
-# Start Laravel app
+# Serve the app
 CMD php -S 0.0.0.0:8080 -t public
